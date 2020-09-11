@@ -27,3 +27,21 @@ pub enum NmeaSentenceError<'a> {
     /// to be created based on the given input
     StatusParsingError(StatusParsingError),
 }
+
+impl<'a> core::fmt::Display for NmeaSentenceError<'a> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        match self {
+            NmeaSentenceError::SentenceLengthError(len) => write!(f, "sentence too long: {}", len),
+            NmeaSentenceError::ChecksumError(s1, s2) => write!(f, "invalid checksum: {:X} != {:X}", s1, s2),
+            NmeaSentenceError::GeneralParsingError => f.write_str("sentence structure invalid"),
+            NmeaSentenceError::TypeNotImplementedError(ty) => write!(f, "not implemented sentence type: {:?}", ty),
+            NmeaSentenceError::HexParsingError(s1, s2) => write!(f, "hex checksum parsing error: {:X} {:X}", s1, s2),
+            NmeaSentenceError::UnkownTypeError(ty) => write!(f, "unknown sentence type: {}", unsafe { core::str::from_utf8_unchecked(*ty) }),
+            NmeaSentenceError::DataParsingError(nom::Err::Error((data, kind))) => write!(f, "parsing error: {:?} in '{:?}'", kind, data),
+            NmeaSentenceError::DataParsingError(nom::Err::Failure((data, kind))) => write!(f, "unrecoverable parsing error: {:?} in '{:?}'", kind, data),
+            NmeaSentenceError::DataParsingError(nom::Err::Incomplete(nom::Needed::Unknown)) => f.write_str("needed more data to complete parsing"),
+            NmeaSentenceError::DataParsingError(nom::Err::Incomplete(nom::Needed::Size(sz))) => write!(f, "needed {} more bytes to complete parsing", sz),
+            NmeaSentenceError::StatusParsingError(err) => write!(f, "parsing status: {:?}", err),
+        }
+    }
+}
