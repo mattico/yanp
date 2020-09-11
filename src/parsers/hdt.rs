@@ -9,7 +9,7 @@ named!(pub (crate) parse_hdt<HdtData>,
             tag!(",T*") >>
             (heading_true)
         ),
-        | sentence: (Option<f32>) | -> Result<HdtData, NmeaSentenceError> {
+        | sentence: Option<f32>| -> Result<HdtData, NmeaSentenceError> {
             Ok(HdtData {
                 heading_true: sentence,
             })

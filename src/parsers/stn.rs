@@ -9,7 +9,7 @@ named!(pub (crate) parse_stn<StnData>,
             char!('*') >>
             (talker_id)
         ),
-        |sentence:(u8) | -> Result<StnData, NmeaSentenceError> {
+        |sentence: u8| -> Result<StnData, NmeaSentenceError> {
             Ok(StnData {
                 talker_id: sentence
             })
