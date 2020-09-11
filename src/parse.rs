@@ -103,6 +103,17 @@ status! {
         'M' => Manual,
         'S' => Simulator
         error: GnsModeError
+    ],
+    NavStat, &[u8]: [
+        b"NF" => NoFix,
+        b"DR" => DeadReckoning,
+        b"G2" => Standalone2D,
+        b"G3" => Standalone3D,
+        b"D2" => Differential2D,
+        b"D3" => Differential3D,
+        b"RK" => GpsAndDeadReckoning,
+        b"TT" => TimeOnly
+        error: NavStatError
     ]
 }
 
@@ -178,6 +189,7 @@ pub enum SentenceData<'a> {
     ZDA(ZdaData),
     ZFO(ZfoData),
     ZTG(ZtgData),
+    PUBX(PubxLocData),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -320,7 +332,7 @@ pub struct GsaData {
     pub selection_mode: Option<GsaSelectionMode>,
     pub mode: Option<GsaMode>,
     pub satellites: [Option<u8>; 12],
-    pub pdob: Option<f32>,
+    pub pdop: Option<f32>,
     pub hdop: Option<f32>,
     pub vdop: Option<f32>,
 }
@@ -463,6 +475,27 @@ pub struct ZfoData {}
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct ZtgData {}
 
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct PubxLocData {
+    pub time: Option<GpsTime>,
+    pub position: Option<GpsPosition>,
+    pub altitude: Option<f32>,
+    pub status: NavStat,
+    pub h_acc: Option<f32>,
+    pub v_acc: Option<f32>,
+    pub sog: Option<f32>,
+    pub cog: Option<f32>,
+    /// Vertical velocity (m/s, positive downwards)
+    pub v_vel: Option<f32>,
+    /// Age of the differential corrections (seconds) if DGPS is used
+    pub diff_age: Option<f32>,
+    pub hdop: Option<f32>,
+    pub vdop: Option<f32>,
+    pub tdop: Option<f32>,
+    pub num_satellites: Option<u8>,
+    pub dead_reckoning: bool,
+}
+
 macro_rules! sentence_parse_generator {
     ($sentence:ident : [$($TYPE:ident => $function:path,)+]) => {
         match $sentence.sentence_type {
@@ -556,6 +589,7 @@ pub(crate) fn parse_sentence_data<'a>(
             //ZDA => parse_zda,
             //ZFO => parse_zfo,
             //ZTG => parse_ztg,
+            PUBX => parsers::pubx::parse_pubx,
         ]
     )
 }

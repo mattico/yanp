@@ -16,3 +16,4 @@ pub(crate) mod stn;
 pub(crate) mod vbw;
 pub(crate) mod vtg;
 pub(crate) mod wpl;
+pub(crate) mod pubx;

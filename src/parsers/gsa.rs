@@ -40,7 +40,7 @@ fn build_gsa<'a>(
             sentence.12,
             sentence.13,
         ],
-        pdob: sentence.14,
+        pdop: sentence.14,
         hdop: sentence.15,
         vdop: sentence.16,
     })
@@ -73,13 +73,13 @@ named!(pub (crate) parse_gsa<GsaData>,
             sat10: complete!(parse_sat_id) >>
             sat11: complete!(parse_sat_id) >>
             sat12: complete!(parse_sat_id) >>
-            pdob: opt!(map_res!(take_until!(","), parse_num::<f32>)) >>
+            pdop: opt!(map_res!(take_until!(","), parse_num::<f32>)) >>
             char!(',') >>
             hdop: opt!(map_res!(take_until!(","), parse_num::<f32>)) >>
             char!(',') >>
             vdop: opt!(map_res!(take_until!("*"), parse_num::<f32>)) >>
             char!('*') >>
-            (selection_mode, mode, sat1, sat2, sat3, sat4, sat5, sat6, sat7, sat8, sat9, sat10, sat11, sat12, pdob, hdop, vdop)
+            (selection_mode, mode, sat1, sat2, sat3, sat4, sat5, sat6, sat7, sat8, sat9, sat10, sat11, sat12, pdop, hdop, vdop)
         ),
         build_gsa
     )

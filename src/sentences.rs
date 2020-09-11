@@ -100,7 +100,8 @@ general_sentences!(
     b"XTR" => XTR,
     b"ZDA" => ZDA,
     b"ZFO" => ZFO,
-    b"ZTG" => ZTG
+    b"ZTG" => ZTG,
+    b"PUBX" => PUBX
 );
 
 fn parse_hex(data: &[u8]) -> Result<u8, NmeaSentenceError> {
