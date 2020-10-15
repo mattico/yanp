@@ -203,9 +203,9 @@ pub struct GpsTime {
 #[derive(Debug, Clone, Copy, PartialEq)]
 /// Represents a geographical position
 pub struct GpsPosition {
-    pub lat: f32,
+    pub lat: f64,
     pub lat_dir: LatitudeDirection,
-    pub lon: f32,
+    pub lon: f64,
     pub lon_dir: LongitudeDirection,
 }
 

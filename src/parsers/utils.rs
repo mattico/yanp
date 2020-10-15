@@ -56,21 +56,21 @@ named!(pub (crate) parse_gps_position<GpsPosition>,
     map_res!(
         do_parse!(
             lat_deg: map_res!(take!(2), parse_num::<u8>) >>
-            lat_min: map_res!(take_until!(","), parse_num::<f32>) >>
+            lat_min: map_res!(take_until!(","), parse_num::<f64>) >>
             char!(',') >>
             lat_dir: one_of!("NS") >>
             char!(',') >>
             lon_deg: map_res!(take!(3), parse_num::<u8>) >>
-            lon_min: map_res!(take_until!(","), parse_num::<f32>) >>
+            lon_min: map_res!(take_until!(","), parse_num::<f64>) >>
             char!(',') >>
             lon_dir: one_of!("EW") >>
             (lat_deg, lat_min, lat_dir, lon_deg, lon_min, lon_dir)
         ),
-        | position: (u8, f32, char, u8, f32, char) | -> Result<GpsPosition, NmeaSentenceError>{
+        | position: (u8, f64, char, u8, f64, char) | -> Result<GpsPosition, NmeaSentenceError>{
             Ok(GpsPosition{
-                lat: (position.0 as f32) + position.1 / 60.,
+                lat: (position.0 as f64) + position.1 / 60.,
                 lat_dir: LatitudeDirection::try_from(position.2)?,
-                lon: (position.3 as f32) + position.4 / 60.,
+                lon: (position.3 as f64) + position.4 / 60.,
                 lon_dir: LongitudeDirection::try_from(position.5)?,
             })
         }
