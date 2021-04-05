@@ -12,6 +12,7 @@ fn build_rmc<'a>(
         Option<GpsDate>,
         Option<f32>,
         Option<char>,
+        Option<char>,
     ),
 ) -> Result<RmcData, NmeaSentenceError<'a>> {
     Ok(RmcData {
@@ -23,6 +24,7 @@ fn build_rmc<'a>(
         date: sentence.5,
         magnetic_variation: sentence.6,
         magnetic_direction: translate_option!(sentence.7, LongitudeDirection),
+        gns_mode: translate_option!(sentence.8, GnsMode),
     })
 }
 
@@ -44,8 +46,10 @@ named!(pub (crate) parse_rmc<RmcData>,
             magnetic_variation: opt!(map_res!(take_until!(","), parse_num::<f32>)) >>
             char!(',') >>
             magnetic_direction: opt!(one_of!("EW")) >>
+            opt!(char!(',')) >>
+            mode: opt!(one_of!("NEADFR")) >>
             char!('*') >>
-            (time, status, position, speed, heading, date, magnetic_variation, magnetic_direction)
+            (time, status, position, speed, heading, date, magnetic_variation, magnetic_direction, mode)
         ),
         build_rmc
     )

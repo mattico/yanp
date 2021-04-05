@@ -405,6 +405,7 @@ pub struct RmcData {
     pub date: Option<GpsDate>,
     pub magnetic_variation: Option<f32>,
     pub magnetic_direction: Option<LongitudeDirection>,
+    pub gns_mode: Option<GnsMode>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
